@@ -47,6 +47,7 @@ type Props = {
   collection: Collection;
   placement?: Placement;
   modal?: boolean;
+  visible?: boolean;
   label?: (props: MenuButtonHTMLProps) => React.ReactNode;
   onRename?: () => void;
   onOpen?: () => void;
@@ -57,6 +58,7 @@ function CollectionMenu({
   collection,
   label,
   modal = true,
+  visible,
   placement,
   onRename,
   onOpen,
@@ -72,6 +74,12 @@ function CollectionMenu({
   const history = useHistory();
   const file = React.useRef<HTMLInputElement>(null);
 
+  React.useEffect(() => {
+    if (visible !== undefined && menu.visible !== visible) {
+      menu.setVisible(visible);
+    }
+  }, [visible]);
+
   const {
     loading: subscriptionLoading,
     loaded: subscriptionLoaded,
@@ -80,7 +88,7 @@ function CollectionMenu({
     subscriptions.fetchOne({
       collectionId: collection.id,
       event: SubscriptionType.Document,
-    })
+    }),
   );
 
   const handlePointerEnter = React.useCallback(() => {
@@ -106,7 +114,7 @@ function CollectionMenu({
       ev.preventDefault();
       history.push(newDocumentPath(collection.id));
     },
-    [history, collection.id]
+    [history, collection.id],
   );
 
   const stopPropagation = React.useCallback((ev: React.SyntheticEvent) => {
@@ -123,7 +131,7 @@ function CollectionMenu({
         file.current.click();
       }
     },
-    [file]
+    [file],
   );
 
   const handleFilePicked = React.useCallback(
@@ -148,7 +156,7 @@ function CollectionMenu({
         ev.target.value = "";
       }
     },
-    [history, collection.id, documents]
+    [history, collection.id, documents],
   );
 
   const handleChangeSort = React.useCallback(
@@ -161,7 +169,7 @@ function CollectionMenu({
         },
       });
     },
-    [collection, menu]
+    [collection, menu],
   );
 
   const context = useActionContext({
@@ -272,7 +280,7 @@ function CollectionMenu({
       canUserInTeam.createExport,
       handleExport,
       handleChangeSort,
-    ]
+    ],
   );
 
   if (!items.length) {

@@ -60,7 +60,7 @@ const CollectionLink: React.FC<Props> = ({
         name,
       });
     },
-    [collection]
+    [collection],
   );
 
   const handleExpand = React.useCallback(() => {
@@ -73,7 +73,7 @@ const CollectionLink: React.FC<Props> = ({
   const [{ isOver, canDrop }, dropRef] = useDropToChangeCollection(
     collection,
     handleExpand,
-    parentRef
+    parentRef,
   );
 
   const handlePrefetch = React.useCallback(() => {
@@ -96,7 +96,7 @@ const CollectionLink: React.FC<Props> = ({
           fullWidth: user.getPreference(UserPreference.FullWidthDocuments),
           data: ProsemirrorHelper.getEmptyDocument(),
         },
-        { publish: true }
+        { publish: true },
       );
       collection?.addDocument(newDocument);
 
@@ -106,12 +106,21 @@ const CollectionLink: React.FC<Props> = ({
         state: { sidebarContext },
       });
     },
-    [user, sidebarContext, closeAddingNewChild, history, collection, documents]
+    [user, sidebarContext, closeAddingNewChild, history, collection, documents],
   );
 
   return (
     <>
-      <Relative ref={mergeRefs([parentRef, dropRef])}>
+      <Relative
+        ref={mergeRefs([parentRef, dropRef])}
+        onContextMenu={(e) => {
+          if (menuOpen || isEditing) {
+            return;
+          }
+          e.preventDefault();
+          handleMenuOpen();
+        }}
+      >
         <DropToImport collectionId={collection.id}>
           <SidebarLink
             onClick={onClick}
@@ -129,7 +138,7 @@ const CollectionLink: React.FC<Props> = ({
             isActiveDrop={isOver && canDrop}
             isActive={(
               match,
-              location: Location<{ sidebarContext?: SidebarContextType }>
+              location: Location<{ sidebarContext?: SidebarContextType }>,
             ) => !!match && location.state?.sidebarContext === sidebarContext}
             label={
               <EditableTitle
@@ -162,6 +171,7 @@ const CollectionLink: React.FC<Props> = ({
                   <CollectionMenu
                     collection={collection}
                     onRename={handleRename}
+                    visible={menuOpen}
                     onOpen={handleMenuOpen}
                     onClose={handleMenuClose}
                   />

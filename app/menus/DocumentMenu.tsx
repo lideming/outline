@@ -69,6 +69,7 @@ type Props = {
   showDisplayOptions?: boolean;
   /** Whether to display menu as a modal */
   modal?: boolean;
+  visible?: boolean;
   /** Whether to include the option of toggling embeds as menu item */
   showToggleEmbeds?: boolean;
   showPin?: boolean;
@@ -115,7 +116,7 @@ const MenuTrigger: React.FC<MenuTriggerProps> = ({ label, onTrigger }) => {
         documentId: document.id,
         collectionId: document.collectionId ?? null,
       }),
-    ])
+    ]),
   );
 
   const handlePointerEnter = React.useCallback(() => {
@@ -159,6 +160,7 @@ const MenuContent: React.FC<MenuContentProps> = observer(function MenuContent_({
   onRename,
   showDisplayOptions,
   showToggleEmbeds,
+  visible,
 }) {
   const user = useCurrentUser();
   const { model: document, menuState } = useMenuContext<Document>();
@@ -178,21 +180,27 @@ const MenuContent: React.FC<MenuContentProps> = observer(function MenuContent_({
 
   const isMobile = useMobile();
 
+  React.useEffect(() => {
+    if (visible !== undefined && menu.visible !== visible) {
+      menu.setVisible(visible);
+    }
+  }, [visible]);
+
   const handleRestore = React.useCallback(
     async (
       ev: React.SyntheticEvent,
       options?: {
         collectionId: string;
-      }
+      },
     ) => {
       await document.restore(options);
       toast.success(
         t("{{ documentName }} restored", {
           documentName: capitalize(document.noun),
-        })
+        }),
       );
     },
-    [t, document]
+    [t, document],
   );
 
   const restoreItems = React.useMemo(
@@ -215,7 +223,7 @@ const MenuContent: React.FC<MenuContentProps> = observer(function MenuContent_({
         return filtered;
       }, []),
     ],
-    [collections.orderedData, handleRestore, policies]
+    [collections.orderedData, handleRestore, policies],
   );
 
   return !isEmpty(can) ? (
@@ -362,7 +370,7 @@ const MenuContent: React.FC<MenuContentProps> = observer(function MenuContent_({
                     const fullWidth = ev.currentTarget.checked;
                     user.setPreference(
                       UserPreference.FullWidthDocuments,
-                      fullWidth
+                      fullWidth,
                     );
                     void user.save();
                     document.fullWidth = fullWidth;
@@ -431,7 +439,7 @@ function DocumentMenu({
           collection.id,
           {
             publish: true,
-          }
+          },
         );
         history.push(importedDocument.url);
       } catch (err) {
@@ -441,7 +449,7 @@ function DocumentMenu({
         ev.target.value = "";
       }
     },
-    [history, collection, documents, document.id]
+    [history, collection, documents, document.id],
   );
 
   return (

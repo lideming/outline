@@ -138,7 +138,18 @@ function StarredLink({ star }: Props) {
 
     return (
       <>
-        <Draggable key={star.id} ref={draggableRef} $isDragging={isDragging}>
+        <Draggable
+          key={star.id}
+          ref={draggableRef}
+          $isDragging={isDragging}
+          onContextMenu={(e) => {
+            if (menuOpen) {
+              return;
+            }
+            e.preventDefault();
+            handleMenuOpen();
+          }}
+        >
           <SidebarLink
             depth={0}
             to={{
@@ -161,6 +172,7 @@ function StarredLink({ star }: Props) {
                 <Fade>
                   <DocumentMenu
                     document={document}
+                    visible={menuOpen}
                     onOpen={handleMenuOpen}
                     onClose={handleMenuClose}
                   />

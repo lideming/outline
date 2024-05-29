@@ -100,6 +100,13 @@ function DocumentListItem(
           sidebarContext,
         },
       }}
+      onContextMenu={(e) => {
+        if (menuOpen) {
+          return;
+        }
+        e.preventDefault();
+        handleMenuOpen();
+      }}
       {...rest}
       {...rovingTabIndex}
     >
@@ -153,6 +160,7 @@ function DocumentListItem(
         <DocumentMenu
           document={document}
           showPin={showPin}
+          visible={menuOpen}
           onOpen={handleMenuOpen}
           onClose={handleMenuClose}
           modal={false}
