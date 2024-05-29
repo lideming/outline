@@ -310,6 +310,13 @@ function InnerDocumentLink(
           $isDragging={isDragging}
           $isMoving={isMoving}
           onKeyDown={handleKeyDown}
+          onContextMenu={(e) => {
+            if (menuOpen || isEditing) {
+              return;
+            }
+            e.preventDefault();
+            handleMenuOpen();
+          }}
         >
           <div ref={dropToReparent}>
             <DropToImport documentId={node.id} activeClassName="activeDropZone">
@@ -372,6 +379,7 @@ function InnerDocumentLink(
                         onRename={() =>
                           editableTitleRef.current?.setIsEditing(true)
                         }
+                        visible={menuOpen}
                         onOpen={handleMenuOpen}
                         onClose={handleMenuClose}
                       />

@@ -39,6 +39,7 @@ type Props = {
   collection: Collection;
   placement?: Placement;
   modal?: boolean;
+  visible?: boolean;
   label?: (props: MenuButtonHTMLProps) => React.ReactNode;
   onRename?: () => void;
   onOpen?: () => void;
@@ -49,6 +50,7 @@ function CollectionMenu({
   collection,
   label,
   modal = true,
+  visible,
   placement,
   onRename,
   onOpen,
@@ -63,6 +65,12 @@ function CollectionMenu({
   const { t } = useTranslation();
   const history = useHistory();
   const file = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (visible !== undefined && menu.visible !== visible) {
+      menu.setVisible(visible);
+    }
+  }, [visible]);
 
   const handleExport = React.useCallback(() => {
     dialogs.openModal({

@@ -131,7 +131,16 @@ const CollectionLink: React.FC<Props> = ({
 
   return (
     <>
-      <Relative ref={drop}>
+      <Relative
+        ref={drop}
+        onContextMenu={(e) => {
+          if (menuOpen || isEditing) {
+            return;
+          }
+          e.preventDefault();
+          handleMenuOpen();
+        }}
+      >
         <DropToImport collectionId={collection.id}>
           <SidebarLink
             to={{
@@ -178,6 +187,7 @@ const CollectionLink: React.FC<Props> = ({
                     onRename={() =>
                       editableTitleRef.current?.setIsEditing(true)
                     }
+                    visible={menuOpen}
                     onOpen={handleMenuOpen}
                     onClose={handleMenuClose}
                   />

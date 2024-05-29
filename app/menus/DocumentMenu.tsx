@@ -61,6 +61,7 @@ type Props = {
   /** Pass true if the document is currently being displayed */
   showDisplayOptions?: boolean;
   modal?: boolean;
+  visible?: boolean;
   showToggleEmbeds?: boolean;
   showPin?: boolean;
   label?: (props: MenuButtonHTMLProps) => React.ReactNode;
@@ -74,6 +75,7 @@ function DocumentMenu({
   document,
   className,
   modal = true,
+  visible,
   showToggleEmbeds,
   showDisplayOptions,
   label,
@@ -105,6 +107,12 @@ function DocumentMenu({
       event: "documents.update",
     })
   );
+
+  React.useEffect(() => {
+    if (visible !== undefined && menu.visible !== visible) {
+      menu.setVisible(visible);
+    }
+  }, [visible]);
 
   const handleOpen = React.useCallback(async () => {
     if (!data && !loading) {
