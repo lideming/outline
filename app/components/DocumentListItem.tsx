@@ -81,6 +81,13 @@ function DocumentListItem(
           title: document.titleWithDefault,
         },
       }}
+      onContextMenu={(e) => {
+        if (menuOpen) {
+          return;
+        }
+        e.preventDefault();
+        handleMenuOpen();
+      }}
       {...rest}
     >
       <Content>
@@ -137,6 +144,7 @@ function DocumentListItem(
         <DocumentMenu
           document={document}
           showPin={showPin}
+          visible={menuOpen}
           onOpen={handleMenuOpen}
           onClose={handleMenuClose}
           modal={false}
