@@ -29,10 +29,12 @@ jobs:
         with:
           context: .
           file: Dockerfile.base
-          push: false
+          push: true
           tags: |
-            yuuza/outline:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
-
+            yuuza/outline-base:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          cache-from: type=registry,ref=yuuza/outline-base:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          cache-to: type=inline
+      - run: docker tag yuuza/outline-base:${{ github.ref_name == 'main' && 'latest' || github.ref_name }} outlinewiki/outline-base:latest
       - name: Build runner image
         uses: docker/build-push-action@v5
         with:
@@ -40,3 +42,5 @@ jobs:
           push: true
           tags: |
             yuuza/outline:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          cache-from: type=registry,ref=yuuza/outline:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          cache-to: type=inline
